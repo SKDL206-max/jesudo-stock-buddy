@@ -114,6 +114,29 @@ export default function Dashboard() {
       </div>
 
       <Card className="p-5">
+        <h3 className="font-semibold text-foreground mb-4">📅 Évolution des ventes hebdomadaires</h3>
+        {last8Weeks.length < 2 ? (
+          <div className="h-[280px] flex flex-col items-center justify-center text-center text-muted-foreground gap-3">
+            <TrendingUp className="h-10 w-10 opacity-40" />
+            <p className="text-sm">Enregistrez votre premier bilan hebdomadaire pour voir l'évolution</p>
+            <Link to="/bilan-semaine" className="text-primary text-sm font-semibold hover:underline">Aller au Bilan Hebdomadaire →</Link>
+          </div>
+        ) : (
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={last8Weeks} margin={{ left: 10, right: 20, top: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                <Tooltip formatter={(v: number) => formatFCFA(v)} labelFormatter={(_, p) => p?.[0]?.payload?.full || ""} />
+                <Line type="monotone" dataKey="ca" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ r: 4, fill: "hsl(var(--accent))" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </Card>
+
+      <Card className="p-5">
         <h3 className="font-semibold text-foreground mb-4">Mouvements récents</h3>
         {recent.length === 0 ? (
           <p className="text-sm text-muted-foreground py-8 text-center">Aucun mouvement enregistré</p>
