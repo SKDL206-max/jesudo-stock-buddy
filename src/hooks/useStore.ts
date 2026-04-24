@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
-import { Product, StockMovement, CompanySettings } from "@/types";
+import { Product, StockMovement, CompanySettings, WeeklyReport } from "@/types";
 import {
   getProducts, saveProducts, getMovements, saveMovements,
-  getSettings, saveSettings,
+  getSettings, saveSettings, getWeeklyReports, saveWeeklyReports,
 } from "@/lib/storage";
 import { uid } from "@/lib/format";
 
@@ -10,12 +10,14 @@ export function useStore() {
   const [products, setProducts] = useState<Product[]>([]);
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [settings, setSettings] = useState<CompanySettings>(() => getSettings());
+  const [weeklyReports, setWeeklyReports] = useState<WeeklyReport[]>([]);
   const [loading, setLoading] = useState(true);
 
   const reload = useCallback(() => {
     setProducts(getProducts());
     setMovements(getMovements());
     setSettings(getSettings());
+    setWeeklyReports(getWeeklyReports());
     setLoading(false);
   }, []);
 
@@ -67,8 +69,56 @@ export function useStore() {
     setSettings(s);
   };
 
+  const saveWeeklyReport = (report: WeeklyReport) => {
+    const list = getWeeklyReports();
+    const idx = list.findIndex((r) => r.id === report.id);
+    if (idx >= 0) list[idx] = report;
+    else list.unshift(report);
+    saveWeeklyReports(list);
+
+    // Apply stock deductions and create SORTIE movements
+    if (report.status === "validé") {
+      const prods = getProducts();
+      const movs = getMovements();
+      const now = new Date().toISOString();
+      report.lines.forEach((line) => {
+        if (line.qtySold <= 0) return;
+        const pIdx = prods.findIndex((p) => p.id === line.productId);
+        if (pIdx >= 0) {
+          prods[pIdx] = {
+            ...prods[pIdx],
+            currentStock: Math.max(0, prods[pIdx].currentStock - line.qtySold),
+            updatedAt: now,
+          };
+        }
+        movs.unshift({
+          id: uid(),
+          productId: line.productId,
+          productName: line.productName,
+          category: line.category,
+          type: "SORTIE",
+          quantity: line.qtySold,
+          unitPrice: line.unitPrice,
+          totalAmount: line.revenue,
+          reason: `Bilan semaine ${report.weekLabel}`,
+          clientOrSupplier: "",
+          note: "",
+          date: report.weekEnd,
+          createdAt: now,
+        });
+      });
+      saveProducts(prods);
+      saveMovements(movs);
+    }
+  };
+
+  const deleteWeeklyReport = (id: string) => {
+    saveWeeklyReports(getWeeklyReports().filter((r) => r.id !== id));
+  };
+
   return {
-    products, movements, settings, loading,
-    upsertProduct, deleteProduct, addMovement, updateSettings, reload,
+    products, movements, settings, weeklyReports, loading,
+    upsertProduct, deleteProduct, addMovement, updateSettings,
+    saveWeeklyReport, deleteWeeklyReport, reload,
   };
 }
