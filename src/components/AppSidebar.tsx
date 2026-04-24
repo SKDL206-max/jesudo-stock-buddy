@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Package, ArrowDownToLine, ArrowUpFromLine,
-  ScrollText, AlertTriangle, Printer, Settings,
+  ScrollText, AlertTriangle, Printer, Settings, CalendarRange,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -15,6 +15,7 @@ const items = [
   { title: "Gestion du stock", url: "/stock", icon: Package },
   { title: "Entrée de stock", url: "/entree", icon: ArrowDownToLine },
   { title: "Sortie de stock", url: "/sortie", icon: ArrowUpFromLine },
+  { title: "Bilan Hebdomadaire", url: "/bilan-semaine", icon: CalendarRange },
   { title: "Historique", url: "/historique", icon: ScrollText },
   { title: "Alertes", url: "/alertes", icon: AlertTriangle },
   { title: "Rapports", url: "/rapports", icon: Printer },
