@@ -48,3 +48,26 @@ export const CATEGORIES = [
 ] as const;
 
 export const UNITS = ["pièce", "boîte", "paquet", "lot", "feuille"] as const;
+
+export interface WeeklyReportLine {
+  productId: string;
+  productName: string;
+  category: string;
+  unitPrice: number;
+  stockBefore: number;
+  qtySold: number;
+  revenue: number;
+  stockAfter: number;
+}
+
+export interface WeeklyReport {
+  id: string;
+  weekLabel: string;
+  weekStart: string;
+  weekEnd: string;
+  createdAt: string;
+  lines: WeeklyReportLine[];
+  totalRevenue: number;
+  totalItemsSold: number;
+  status: "brouillon" | "validé";
+}

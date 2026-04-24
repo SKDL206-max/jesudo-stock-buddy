@@ -2,14 +2,15 @@ import { useMemo } from "react";
 import { useStore } from "@/hooks/useStore";
 import { KpiCard } from "@/components/KpiCard";
 import { Card } from "@/components/ui/card";
-import { Package, Wallet, AlertTriangle, XCircle } from "lucide-react";
+import { Package, Wallet, AlertTriangle, XCircle, TrendingUp } from "lucide-react";
 import { formatFCFA } from "@/lib/format";
 import { CATEGORIES } from "@/types";
 import { Link } from "react-router-dom";
 import { MovementBadge } from "@/components/StatusBadges";
-import { format } from "date-fns";
+import { format, startOfWeek } from "date-fns";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid,
+  LineChart, Line,
 } from "recharts";
 
 const PIE_COLORS = [
@@ -19,7 +20,22 @@ const PIE_COLORS = [
 ];
 
 export default function Dashboard() {
-  const { products, movements } = useStore();
+  const { products, movements, weeklyReports } = useStore();
+
+  const currentWeekStartIso = startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString().slice(0, 10);
+  const currentWeekReport = weeklyReports.find((r) => r.weekStart === currentWeekStartIso && r.status === "validé");
+
+  const last8Weeks = useMemo(() => {
+    return [...weeklyReports]
+      .filter((r) => r.status === "validé")
+      .sort((a, b) => a.weekStart.localeCompare(b.weekStart))
+      .slice(-8)
+      .map((r) => ({
+        name: `S${r.weekLabel.match(/Semaine (\d+)/)?.[1] || ""}`,
+        ca: r.totalRevenue,
+        full: r.weekLabel,
+      }));
+  }, [weeklyReports]);
 
   const totalRefs = products.length;
   const totalValue = products.reduce((s, p) => s + p.currentStock * p.unitPrice, 0);
@@ -57,11 +73,12 @@ export default function Dashboard() {
         <p className="text-sm text-muted-foreground mt-1">Vue d'ensemble de votre stock</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <KpiCard title="Total Références" value={totalRefs} icon={Package} variant="primary" />
         <KpiCard title="Valeur totale du stock" value={formatFCFA(totalValue)} icon={Wallet} variant="success" />
         <KpiCard title="Alertes stock faible" value={lowStock} icon={AlertTriangle} variant="warning" />
         <KpiCard title="Ruptures de stock" value={outOfStock} icon={XCircle} variant="destructive" />
+        <KpiCard title="CA cette semaine" value={currentWeekReport ? formatFCFA(currentWeekReport.totalRevenue) : "—"} icon={TrendingUp} variant="primary" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -94,6 +111,29 @@ export default function Dashboard() {
           </div>
         </Card>
       </div>
+
+      <Card className="p-5">
+        <h3 className="font-semibold text-foreground mb-4">📅 Évolution des ventes hebdomadaires</h3>
+        {last8Weeks.length < 2 ? (
+          <div className="h-[280px] flex flex-col items-center justify-center text-center text-muted-foreground gap-3">
+            <TrendingUp className="h-10 w-10 opacity-40" />
+            <p className="text-sm">Enregistrez votre premier bilan hebdomadaire pour voir l'évolution</p>
+            <Link to="/bilan-semaine" className="text-primary text-sm font-semibold hover:underline">Aller au Bilan Hebdomadaire →</Link>
+          </div>
+        ) : (
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={last8Weeks} margin={{ left: 10, right: 20, top: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                <Tooltip formatter={(v: number) => formatFCFA(v)} labelFormatter={(_, p) => p?.[0]?.payload?.full || ""} />
+                <Line type="monotone" dataKey="ca" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ r: 4, fill: "hsl(var(--accent))" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </Card>
 
       <Card className="p-5">
         <h3 className="font-semibold text-foreground mb-4">Mouvements récents</h3>
