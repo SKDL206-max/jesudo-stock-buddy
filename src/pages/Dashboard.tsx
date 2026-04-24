@@ -7,8 +7,7 @@ import { formatFCFA } from "@/lib/format";
 import { CATEGORIES } from "@/types";
 import { Link } from "react-router-dom";
 import { MovementBadge } from "@/components/StatusBadges";
-import { format, startOfWeek, parseISO } from "date-fns";
-import { fr } from "date-fns/locale";
+import { format, startOfWeek } from "date-fns";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid,
   LineChart, Line,
