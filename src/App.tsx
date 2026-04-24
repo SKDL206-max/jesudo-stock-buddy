@@ -12,6 +12,7 @@ import HistoriquePage from "./pages/HistoriquePage";
 import AlertesPage from "./pages/AlertesPage";
 import RapportsPage from "./pages/RapportsPage";
 import ParametresPage from "./pages/ParametresPage";
+import BilanSemainePage from "./pages/BilanSemainePage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/stock" element={<StockPage />} />
             <Route path="/entree" element={<EntreePage />} />
             <Route path="/sortie" element={<SortiePage />} />
+            <Route path="/bilan-semaine" element={<BilanSemainePage />} />
             <Route path="/historique" element={<HistoriquePage />} />
             <Route path="/alertes" element={<AlertesPage />} />
             <Route path="/rapports" element={<RapportsPage />} />
