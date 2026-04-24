@@ -1,9 +1,21 @@
-import { Product, StockMovement, CompanySettings } from "@/types";
+import { Product, StockMovement, CompanySettings, WeeklyReport } from "@/types";
 import { buildInitialProducts } from "@/data/initialProducts";
 
 const PK = "jesudo_products";
 const MK = "jesudo_movements";
 const SK = "jesudo_settings";
+const WK = "jesudo_weekly_reports";
+
+export function getWeeklyReports(): WeeklyReport[] {
+  const raw = localStorage.getItem(WK);
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch { return []; }
+}
+
+export function saveWeeklyReports(r: WeeklyReport[]) {
+  localStorage.setItem(WK, JSON.stringify(r));
+  window.dispatchEvent(new Event("jesudo:data"));
+}
 
 const DEFAULT_SETTINGS: CompanySettings = {
   name: "ETS JESUDO & FILS",
@@ -54,6 +66,7 @@ export function clearAll() {
   localStorage.removeItem(PK);
   localStorage.removeItem(MK);
   localStorage.removeItem(SK);
+  localStorage.removeItem(WK);
   window.dispatchEvent(new Event("jesudo:data"));
 }
 
