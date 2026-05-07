@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Users, Phone, MapPin, FileText, ArrowRight, Lock, BarChart3, ClipboardList, Eye } from "lucide-react";
+import { ShieldCheck, Users, Phone, MapPin, FileText, ArrowRight, Lock, BarChart3, ClipboardList, Eye, Settings, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { setRole } from "@/lib/role";
 import heroImg from "@/assets/hero-jesudo.jpg";
