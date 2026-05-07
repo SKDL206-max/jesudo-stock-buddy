@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useStore } from "@/hooks/useStore";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useRole } from "@/hooks/useRole";
+import { clearRole } from "@/lib/role";
 
 export function AppHeader() {
   const [now, setNow] = useState(new Date());
   const { products } = useStore();
+  const role = useRole();
+  const navigate = useNavigate();
+  const logout = () => { clearRole(); navigate("/"); };
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -48,6 +54,18 @@ export function AppHeader() {
             </Badge>
           )}
         </Link>
+
+        {role && (
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs font-semibold text-foreground">
+            <span className={`h-2 w-2 rounded-full ${role === "admin" ? "bg-primary" : "bg-accent"}`} />
+            {role === "admin" ? "Administrateur" : "Employé"}
+          </div>
+        )}
+
+        <Button variant="ghost" size="sm" onClick={logout} title="Quitter">
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">Quitter</span>
+        </Button>
       </div>
     </header>
   );
