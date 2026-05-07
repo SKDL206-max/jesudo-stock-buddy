@@ -9,9 +9,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useRole } from "@/hooks/useRole";
+import { isRouteAllowed } from "@/lib/role";
 
 const items = [
-  { title: "Tableau de bord", url: "/", icon: LayoutDashboard },
+  { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gestion du stock", url: "/stock", icon: Package },
   { title: "Entrée de stock", url: "/entree", icon: ArrowDownToLine },
   { title: "Sortie de stock", url: "/sortie", icon: ArrowUpFromLine },
@@ -26,6 +28,9 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { pathname } = useLocation();
+  const role = useRole();
+
+  const visible = items.filter((it) => (role ? isRouteAllowed(role, it.url) : true));
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -42,7 +47,9 @@ export function AppSidebar() {
               </div>
               <div>
                 <div className="text-sidebar-foreground font-bold leading-tight">JESUDO</div>
-                <div className="text-xs text-sidebar-foreground/70">Stock Manager</div>
+                <div className="text-xs text-sidebar-foreground/70">
+                  {role === "admin" ? "Espace Administrateur" : role === "employe" ? "Espace Employé" : "Stock Manager"}
+                </div>
               </div>
             </div>
           )}
@@ -52,7 +59,7 @@ export function AppSidebar() {
           {!collapsed && <SidebarGroupLabel className="text-sidebar-foreground/60 uppercase text-[10px] tracking-wider">Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((it) => {
+              {visible.map((it) => {
                 const active = pathname === it.url;
                 return (
                   <SidebarMenuItem key={it.url}>
