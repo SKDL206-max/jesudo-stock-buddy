@@ -6,8 +6,9 @@ import { Package, Wallet, AlertTriangle, XCircle, TrendingUp } from "lucide-reac
 import { formatFCFA } from "@/lib/format";
 import { CATEGORIES } from "@/types";
 import { Link } from "react-router-dom";
-import { MovementBadge } from "@/components/StatusBadges";
 import { format, startOfWeek } from "date-fns";
+import { ActivityFeed } from "@/components/ActivityFeed";
+import { StockHeatmap } from "@/components/StockHeatmap";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid,
   LineChart, Line,
