@@ -136,37 +136,36 @@ export default function Dashboard() {
         )}
       </Card>
 
-      <Card className="p-5">
-        <h3 className="font-semibold text-foreground mb-4">Mouvements récents</h3>
-        {recent.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">Aucun mouvement enregistré</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-xs uppercase text-muted-foreground border-b">
-                <tr>
-                  <th className="text-left py-2 px-3">Date</th>
-                  <th className="text-left py-2 px-3">Produit</th>
-                  <th className="text-left py-2 px-3">Type</th>
-                  <th className="text-right py-2 px-3">Quantité</th>
-                  <th className="text-right py-2 px-3">Montant</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((m) => (
-                  <tr key={m.id} className="border-b last:border-0 hover:bg-muted/40">
-                    <td className="py-2 px-3 text-muted-foreground tabular-nums">{format(new Date(m.createdAt), "dd/MM HH:mm")}</td>
-                    <td className="py-2 px-3 font-medium">{m.productName}</td>
-                    <td className="py-2 px-3"><MovementBadge type={m.type} /></td>
-                    <td className="py-2 px-3 text-right tabular-nums">{m.quantity}</td>
-                    <td className="py-2 px-3 text-right tabular-nums font-medium">{formatFCFA(m.totalAmount)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
+      <StockHeatmap />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ActivityFeed limit={12} />
+        <Card className="p-5">
+          <h3 className="font-semibold text-foreground mb-4">Mouvements récents</h3>
+          {recent.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-8 text-center">Aucun mouvement enregistré</p>
+          ) : (
+            <ul className="divide-y text-sm">
+              {recent.map((m) => (
+                <li key={m.id} className="flex items-center justify-between py-2.5 gap-3">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{m.productName}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {format(new Date(m.createdAt), "dd/MM HH:mm")} · {m.type === "ENTREE" ? "Entrée" : "Sortie"}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className={`text-sm font-semibold tabular-nums ${m.type === "ENTREE" ? "text-success" : "text-destructive"}`}>
+                      {m.type === "ENTREE" ? "+" : "−"}{m.quantity}
+                    </div>
+                    <div className="text-[11px] text-muted-foreground tabular-nums">{formatFCFA(m.totalAmount)}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }
