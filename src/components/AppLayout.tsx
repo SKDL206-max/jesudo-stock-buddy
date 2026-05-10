@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
+import { CriticalFocusMode } from "./CriticalFocusMode";
 
 export function AppLayout() {
   return (
@@ -14,6 +15,7 @@ export function AppLayout() {
             <Outlet />
           </main>
         </div>
+        <CriticalFocusMode />
       </div>
     </SidebarProvider>
   );
