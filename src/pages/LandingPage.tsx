@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Users, Phone, MapPin, FileText, ArrowRight, Lock, BarChart3, ClipboardList, Eye, Settings, AlertTriangle } from "lucide-react";
+import { ShieldCheck, Phone, MapPin, FileText, ArrowRight, Lock, BarChart3, Settings, Package, ScrollText, Printer, CalendarRange } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { setRole } from "@/lib/role";
 import heroImg from "@/assets/hero-jesudo.jpg";
@@ -7,8 +7,8 @@ import heroImg from "@/assets/hero-jesudo.jpg";
 export default function LandingPage() {
   const navigate = useNavigate();
 
-  const enter = (r: "admin" | "employe") => {
-    setRole(r);
+  const enter = () => {
+    setRole("admin");
     navigate("/dashboard");
   };
 
@@ -66,142 +66,83 @@ export default function LandingPage() {
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background pointer-events-none" />
 
-        {/* Spaces */}
-        <section className="relative max-w-6xl mx-auto w-full px-4 py-14 md:py-20">
+        {/* Admin space */}
+        <section className="relative max-w-3xl mx-auto w-full px-4 py-14 md:py-20">
           <div className="text-center mb-10 md:mb-12">
-            <h2 className="text-2xl md:text-4xl font-extrabold text-foreground tracking-tight">Choisissez votre espace</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-foreground tracking-tight">Espace de gestion</h2>
             <p className="text-sm md:text-base text-muted-foreground mt-3 max-w-lg mx-auto">
-              Accédez à l'interface adaptée à votre rôle dans l'établissement.
+              Accédez à la plateforme complète de gestion de l'établissement.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {/* Admin Card */}
-            <div className="group relative rounded-2xl border bg-card p-1 shadow-sm transition-all duration-500 hover:shadow-[0_20px_50px_-12px_hsl(var(--primary)/0.25)] hover:-translate-y-1 hover:border-primary/40 animate-fade-in">
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/20 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative rounded-xl bg-card p-6 md:p-8 overflow-hidden">
-                {/* Glow orb */}
-                <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl group-hover:bg-primary/20 transition-colors duration-500" />
+          <div className="group relative rounded-2xl border bg-card p-1 shadow-sm transition-all duration-500 hover:shadow-[0_30px_60px_-15px_hsl(var(--primary)/0.35)] hover:-translate-y-1 hover:border-primary/40 animate-fade-in">
+            <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/30 via-transparent to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="relative rounded-xl bg-card p-6 md:p-10 overflow-hidden">
+              <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl group-hover:bg-primary/20 transition-colors duration-500" />
+              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent/10 blur-3xl group-hover:bg-accent/20 transition-colors duration-500" />
 
-                <div className="flex items-start gap-5 relative">
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center shrink-0 shadow-lg shadow-primary/25 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                    <ShieldCheck className="h-7 w-7" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-300">
-                        Espace Administrateur
-                      </h3>
-                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary border border-primary/10">
-                        Accès total
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Gestion complète du stock, entrées/sorties, rapports, paramètres et tous les modules.
-                    </p>
-                  </div>
+              <div className="flex items-start gap-5 relative">
+                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center shrink-0 shadow-lg shadow-primary/25 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                  <ShieldCheck className="h-8 w-8" />
                 </div>
-
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { icon: Lock, label: "Stock & produits" },
-                    { icon: BarChart3, label: "Rapports & CA" },
-                    { icon: Settings, label: "Paramètres" },
-                  ].map((f) => (
-                    <div key={f.label} className="flex items-center gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/80 group-hover:bg-primary/5 transition-colors duration-300">
-                      <f.icon className="h-3.5 w-3.5 text-primary shrink-0" />
-                      {f.label}
-                    </div>
-                  ))}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <h3 className="font-bold text-2xl text-foreground group-hover:text-primary transition-colors duration-300">
+                      Espace Administrateur
+                    </h3>
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary border border-primary/10">
+                      Accès total
+                    </span>
+                  </div>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Gestion complète du stock, entrées/sorties, bilans hebdomadaires, rapports, alertes et paramètres.
+                  </p>
                 </div>
-
-                <ul className="mt-5 space-y-2.5 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Création et modification des produits
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Saisie des entrées et sorties de stock
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Rapports, impressions et bilans
-                  </li>
-                </ul>
-
-                <Button
-                  className="mt-6 w-full h-12 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-                  onClick={() => enter("admin")}
-                >
-                  Entrer comme Administrateur
-                  <ArrowRight className="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
-                </Button>
               </div>
-            </div>
 
-            {/* Employé Card */}
-            <div className="group relative rounded-2xl border bg-card p-1 shadow-sm transition-all duration-500 hover:shadow-[0_20px_50px_-12px_hsl(var(--accent)/0.25)] hover:-translate-y-1 hover:border-accent/40 animate-fade-in [animation-delay:150ms]">
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-accent/20 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative rounded-xl bg-card p-6 md:p-8 overflow-hidden">
-                <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-accent/10 blur-3xl group-hover:bg-accent/20 transition-colors duration-500" />
-
-                <div className="flex items-start gap-5 relative">
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-amber-400 to-warning text-white flex items-center justify-center shrink-0 shadow-lg shadow-accent/25 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                    <Users className="h-7 w-7" />
+              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 relative">
+                {[
+                  { icon: Package, label: "Gestion stock" },
+                  { icon: BarChart3, label: "Tableau de bord" },
+                  { icon: CalendarRange, label: "Bilan hebdo" },
+                  { icon: ScrollText, label: "Historique" },
+                  { icon: Printer, label: "Rapports" },
+                  { icon: Settings, label: "Paramètres" },
+                ].map((f, i) => (
+                  <div
+                    key={f.label}
+                    className="flex items-center gap-2 rounded-lg bg-muted/60 px-3 py-2.5 text-xs font-medium text-foreground/80 group-hover:bg-primary/5 transition-all duration-300 hover:scale-[1.03] animate-fade-in"
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  >
+                    <f.icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                    {f.label}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-xl text-foreground group-hover:text-accent transition-colors duration-300">
-                        Espace Employé
-                      </h3>
-                      <span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent border border-accent/10">
-                        Accès limité
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Pour les membres chargés du bilan hebdomadaire et du suivi quotidien.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { icon: ClipboardList, label: "Bilan hebdo" },
-                    { icon: Eye, label: "Vue stocks" },
-                    { icon: AlertTriangle, label: "Alertes" },
-                  ].map((f) => (
-                    <div key={f.label} className="flex items-center gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/80 group-hover:bg-accent/5 transition-colors duration-300">
-                      <f.icon className="h-3.5 w-3.5 text-accent shrink-0" />
-                      {f.label}
-                    </div>
-                  ))}
-                </div>
-
-                <ul className="mt-5 space-y-2.5 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-accent/10 text-accent flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Saisie du bilan hebdomadaire de ventes
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-accent/10 text-accent flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Consultation du tableau de bord et alertes
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <span className="h-5 w-5 rounded-full bg-accent/10 text-accent flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                    Lecture seule sur le stock (pas de modification)
-                  </li>
-                </ul>
-
-                <Button
-                  variant="secondary"
-                  className="mt-6 w-full h-12 text-base font-semibold border-2 border-accent/20 hover:border-accent/40 hover:bg-accent/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-accent hover:text-accent"
-                  onClick={() => enter("employe")}
-                >
-                  Entrer comme Employé
-                  <ArrowRight className="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
-                </Button>
+                ))}
               </div>
+
+              <ul className="mt-6 space-y-2.5 text-sm text-muted-foreground relative">
+                <li className="flex items-center gap-2.5">
+                  <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                  Création, modification et suppression des produits
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                  Saisie des entrées, sorties et bilans hebdomadaires
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <span className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                  Rapports, impressions et exports CSV
+                </li>
+              </ul>
+
+              <Button
+                className="mt-8 w-full h-12 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                onClick={enter}
+              >
+                <Lock className="h-4 w-4 mr-1" />
+                Entrer dans la plateforme
+                <ArrowRight className="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
+              </Button>
             </div>
           </div>
         </section>

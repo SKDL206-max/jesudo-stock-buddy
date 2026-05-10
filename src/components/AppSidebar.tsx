@@ -9,8 +9,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { useRole } from "@/hooks/useRole";
-import { isRouteAllowed } from "@/lib/role";
 
 const items = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
@@ -28,9 +26,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { pathname } = useLocation();
-  const role = useRole();
-
-  const visible = items.filter((it) => (role ? isRouteAllowed(role, it.url) : true));
+  const visible = items;
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -47,9 +43,7 @@ export function AppSidebar() {
               </div>
               <div>
                 <div className="text-sidebar-foreground font-bold leading-tight">JESUDO</div>
-                <div className="text-xs text-sidebar-foreground/70">
-                  {role === "admin" ? "Espace Administrateur" : role === "employe" ? "Espace Employé" : "Stock Manager"}
-                </div>
+                <div className="text-xs text-sidebar-foreground/70">Espace Administrateur</div>
               </div>
             </div>
           )}

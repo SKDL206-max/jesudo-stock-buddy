@@ -1,14 +1,13 @@
-export type Role = "admin" | "employe";
+export type Role = "admin";
 
 const RK = "jesudo_role";
 
 export function getRole(): Role | null {
-  const v = localStorage.getItem(RK);
-  return v === "admin" || v === "employe" ? v : null;
+  return localStorage.getItem(RK) === "admin" ? "admin" : null;
 }
 
-export function setRole(r: Role) {
-  localStorage.setItem(RK, r);
+export function setRole(_r: Role) {
+  localStorage.setItem(RK, "admin");
   window.dispatchEvent(new Event("jesudo:role"));
 }
 
@@ -17,17 +16,11 @@ export function clearRole() {
   window.dispatchEvent(new Event("jesudo:role"));
 }
 
-// Routes accessible per role
 export const ADMIN_ROUTES = [
   "/dashboard", "/stock", "/entree", "/sortie", "/bilan-semaine",
   "/historique", "/alertes", "/rapports", "/parametres",
 ];
 
-export const EMPLOYE_ROUTES = [
-  "/dashboard", "/bilan-semaine", "/historique", "/alertes",
-];
-
-export function isRouteAllowed(role: Role, path: string): boolean {
-  const list = role === "admin" ? ADMIN_ROUTES : EMPLOYE_ROUTES;
-  return list.includes(path);
+export function isRouteAllowed(_role: Role, path: string): boolean {
+  return ADMIN_ROUTES.includes(path);
 }
