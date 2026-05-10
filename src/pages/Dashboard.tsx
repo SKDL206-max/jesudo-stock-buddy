@@ -76,8 +76,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <KpiCard title="Total Références" value={totalRefs} icon={Package} variant="primary" />
         <KpiCard title="Valeur totale du stock" value={formatFCFA(totalValue)} icon={Wallet} variant="success" />
-        <KpiCard title="Alertes stock faible" value={lowStock} icon={AlertTriangle} variant="warning" />
-        <KpiCard title="Ruptures de stock" value={outOfStock} icon={XCircle} variant="destructive" />
+        <KpiCard title="Alertes stock faible" value={lowStock} icon={AlertTriangle} variant="warning" alert={lowStock > 0} />
+        <KpiCard title="Ruptures de stock" value={outOfStock} icon={XCircle} variant="destructive" alert={outOfStock > 0} />
         <KpiCard title="CA cette semaine" value={currentWeekReport ? formatFCFA(currentWeekReport.totalRevenue) : "—"} icon={TrendingUp} variant="primary" />
       </div>
 
