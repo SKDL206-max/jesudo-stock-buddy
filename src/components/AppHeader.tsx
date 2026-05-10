@@ -7,13 +7,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useStore } from "@/hooks/useStore";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useRole } from "@/hooks/useRole";
 import { clearRole } from "@/lib/role";
 
 export function AppHeader() {
   const [now, setNow] = useState(new Date());
   const { products } = useStore();
-  const role = useRole();
   const navigate = useNavigate();
   const logout = () => { clearRole(); navigate("/"); };
 
@@ -55,12 +53,10 @@ export function AppHeader() {
           )}
         </Link>
 
-        {role && (
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs font-semibold text-foreground">
-            <span className={`h-2 w-2 rounded-full ${role === "admin" ? "bg-primary" : "bg-accent"}`} />
-            {role === "admin" ? "Administrateur" : "Employé"}
-          </div>
-        )}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-xs font-semibold text-primary">
+          <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+          Administrateur
+        </div>
 
         <Button variant="ghost" size="sm" onClick={logout} title="Quitter">
           <LogOut className="h-4 w-4" />
