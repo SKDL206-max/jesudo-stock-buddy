@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import { Product, StockMovement, CompanySettings, WeeklyReport } from "@/types";
 import {
   getProducts, saveProducts, getMovements, saveMovements,
   getSettings, saveSettings, getWeeklyReports, saveWeeklyReports,
 } from "@/lib/storage";
 import { uid } from "@/lib/format";
+import { formatFCFA } from "@/lib/format";
+import { getRole } from "@/lib/role";
 
 export function useStore() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -52,15 +55,43 @@ export function useStore() {
     // Update product stock
     const products = getProducts();
     const idx = products.findIndex((p) => p.id === m.productId);
+    let stockBefore = 0;
+    let stockAfter = 0;
     if (idx >= 0) {
+      stockBefore = products[idx].currentStock;
       const delta = m.type === "ENTREE" ? m.quantity : -m.quantity;
+      stockAfter = Math.max(0, stockBefore + delta);
       products[idx] = {
         ...products[idx],
-        currentStock: Math.max(0, products[idx].currentStock + delta),
+        currentStock: stockAfter,
         unitPrice: m.type === "ENTREE" && m.unitPrice > 0 ? m.unitPrice : products[idx].unitPrice,
         updatedAt: new Date().toISOString(),
       };
       saveProducts(products);
+    }
+
+    // Smart Toast — animated, contextual
+    const isIn = m.type === "ENTREE";
+    const role = getRole();
+    const userLabel = role === "admin" ? "Administrateur" : "Système";
+    const sign = isIn ? "+" : "−";
+    toast[isIn ? "success" : "info"](
+      `${sign}${m.quantity} · ${m.productName}`,
+      {
+        description: `${stockBefore} → ${stockAfter} ${products[idx]?.unit || ""} · ${formatFCFA(m.totalAmount)} · par ${userLabel}`,
+        duration: 4000,
+      }
+    );
+    if (stockAfter === 0 && idx >= 0) {
+      toast.error(`Rupture: ${m.productName}`, {
+        description: "Stock épuisé — réapprovisionnement requis",
+        duration: 6000,
+      });
+    } else if (idx >= 0 && stockAfter > 0 && stockAfter <= products[idx].minStockAlert) {
+      toast.warning(`Stock faible: ${m.productName}`, {
+        description: `${stockAfter} restant(s) · seuil ${products[idx].minStockAlert}`,
+        duration: 5000,
+      });
     }
   };
 
