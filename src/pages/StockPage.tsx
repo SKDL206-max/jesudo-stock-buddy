@@ -6,12 +6,13 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Edit, ArrowDownToLine, ArrowUpFromLine, Download, Trash2 } from "lucide-react";
+import { Plus, Search, Edit, ArrowDownToLine, ArrowUpFromLine, Download, Trash2, SlidersHorizontal, X } from "lucide-react";
 import { StockStatusBadge } from "@/components/StatusBadges";
 import { ProductModal } from "@/components/ProductModal";
 import { productsToCSV } from "@/lib/csv";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -25,21 +26,34 @@ export default function StockPage() {
   const [search, setSearch] = useState("");
   const [cat, setCat] = useState("ALL");
   const [status, setStatus] = useState("ALL");
+  const [stockMin, setStockMin] = useState<string>("");
+  const [stockMax, setStockMax] = useState<string>("");
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [toDelete, setToDelete] = useState<Product | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
+    const min = stockMin === "" ? -Infinity : Number(stockMin);
+    const max = stockMax === "" ? Infinity : Number(stockMax);
     return products.filter((p) => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
       if (cat !== "ALL" && p.category !== cat) return false;
       if (status === "OK" && !(p.currentStock > p.minStockAlert)) return false;
       if (status === "LOW" && !(p.currentStock > 0 && p.currentStock <= p.minStockAlert)) return false;
       if (status === "OUT" && p.currentStock !== 0) return false;
+      if (p.currentStock < min || p.currentStock > max) return false;
       return true;
     });
-  }, [products, search, cat, status]);
+  }, [products, search, cat, status, stockMin, stockMax]);
+
+  const activeFilterCount =
+    (cat !== "ALL" ? 1 : 0) + (status !== "ALL" ? 1 : 0) + (stockMin !== "" ? 1 : 0) + (stockMax !== "" ? 1 : 0);
+
+  const resetFilters = () => {
+    setCat("ALL"); setStatus("ALL"); setStockMin(""); setStockMax(""); setPage(1);
+  };
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
