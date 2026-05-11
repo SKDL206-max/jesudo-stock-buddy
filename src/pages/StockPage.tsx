@@ -81,30 +81,109 @@ export default function StockPage() {
         </div>
       </div>
 
-      <Card className="p-4">
-        <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[220px]">
+      <Card className="p-3 sm:p-4 space-y-3">
+        <div className="flex gap-2 items-center">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input className="pl-9" placeholder="Rechercher un produit..." value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+            <Input
+              className="pl-9 h-11 sm:h-10"
+              placeholder="Rechercher un produit..."
+              inputMode="search"
+              autoComplete="off"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted text-muted-foreground"
+                aria-label="Effacer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
+          <Button
+            type="button"
+            variant={filtersOpen || activeFilterCount > 0 ? "default" : "outline"}
+            size="icon"
+            className="h-11 w-11 sm:h-10 sm:w-10 relative md:hidden shrink-0"
+            onClick={() => setFiltersOpen((o) => !o)}
+            aria-label="Filtres"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            {activeFilterCount > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-accent text-accent-foreground text-[10px]">
+                {activeFilterCount}
+              </Badge>
+            )}
+          </Button>
+        </div>
+
+        {/* Quick status chips */}
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { v: "ALL", label: "Tous" },
+            { v: "OK", label: "En stock" },
+            { v: "LOW", label: "Faible" },
+            { v: "OUT", label: "Rupture" },
+          ].map((s) => (
+            <button
+              key={s.v}
+              type="button"
+              onClick={() => { setStatus(s.v); setPage(1); }}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-xs font-medium border transition-all active:scale-95",
+                status === s.v
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  : "bg-background text-foreground border-border hover:bg-muted"
+              )}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Advanced filters: always visible on desktop, collapsible on mobile */}
+        <div className={cn("grid gap-3 sm:grid-cols-3", !filtersOpen && "hidden md:grid")}>
           <Select value={cat} onValueChange={(v) => { setCat(v); setPage(1); }}>
-            <SelectTrigger className="w-full sm:w-[260px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-11 sm:h-10"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">Toutes catégories</SelectItem>
               {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
-            <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Tous statuts</SelectItem>
-              <SelectItem value="OK">En stock</SelectItem>
-              <SelectItem value="LOW">Stock faible</SelectItem>
-              <SelectItem value="OUT">Rupture</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            min={0}
+            placeholder="Stock min"
+            className="h-11 sm:h-10 tabular-nums"
+            value={stockMin}
+            onChange={(e) => { setStockMin(e.target.value); setPage(1); }}
+          />
+          <Input
+            type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            min={0}
+            placeholder="Stock max"
+            className="h-11 sm:h-10 tabular-nums"
+            value={stockMax}
+            onChange={(e) => { setStockMax(e.target.value); setPage(1); }}
+          />
         </div>
+
+        {activeFilterCount > 0 && (
+          <div className="flex items-center justify-between pt-1 border-t">
+            <span className="text-xs text-muted-foreground">{activeFilterCount} filtre(s) actif(s)</span>
+            <Button variant="ghost" size="sm" onClick={resetFilters} className="h-8 text-xs">
+              <X className="h-3 w-3 mr-1" /> Réinitialiser
+            </Button>
+          </div>
+        )}
       </Card>
 
       {/* Mobile card view */}
