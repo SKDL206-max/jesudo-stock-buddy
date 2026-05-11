@@ -72,7 +72,7 @@ export function StockHeatmap() {
       {products.length === 0 ? (
         <div className="py-10 text-center text-sm text-muted-foreground">Aucun produit</div>
       ) : (
-        <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 gap-1.5">
+        <div className="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 gap-1 sm:gap-1.5">
           {products.map((p) => {
             const s = statusOf(p.currentStock, p.minStockAlert);
             const pulsing = pulse[p.id];
