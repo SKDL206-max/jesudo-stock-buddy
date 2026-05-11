@@ -74,7 +74,7 @@ export default function Dashboard() {
         <p className="text-sm text-muted-foreground mt-1">Vue d'ensemble de votre stock</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <KpiCard title="Total Références" value={totalRefs} icon={Package} variant="primary" />
         <KpiCard title="Valeur totale du stock" value={formatFCFA(totalValue)} icon={Wallet} variant="success" />
         <KpiCard title="Alertes stock faible" value={lowStock} icon={AlertTriangle} variant="warning" alert={lowStock > 0} />

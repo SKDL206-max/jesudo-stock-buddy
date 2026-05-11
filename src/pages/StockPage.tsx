@@ -51,18 +51,18 @@ export default function StockPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Gestion du stock</h1>
-          <p className="text-sm text-muted-foreground mt-1">{filtered.length} produit(s) affiché(s)</p>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold">Gestion du stock</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{filtered.length} produit(s) affiché(s)</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => productsToCSV(filtered)}>
-            <Download className="h-4 w-4 mr-2" /> Exporter CSV
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => productsToCSV(filtered)}>
+            <Download className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Exporter CSV</span><span className="sm:hidden">CSV</span>
           </Button>
-          <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
-            <Plus className="h-4 w-4 mr-2" /> Nouveau produit
+          <Button className="flex-1 sm:flex-none" onClick={() => { setEditing(null); setModalOpen(true); }}>
+            <Plus className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Nouveau produit</span><span className="sm:hidden">Nouveau</span>
           </Button>
         </div>
       </div>
@@ -93,8 +93,46 @@ export default function StockPage() {
         </div>
       </Card>
 
-      <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
+      {/* Mobile card view */}
+      <div className="md:hidden space-y-2">
+        {paged.length === 0 && (
+          <Card className="py-12 text-center text-sm text-muted-foreground">Aucun produit trouvé</Card>
+        )}
+        {paged.map((p) => (
+          <Card key={p.id} className="p-3">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold text-sm leading-tight">{p.name}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{p.category}</div>
+              </div>
+              <StockStatusBadge product={p} />
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+              <div><div className="text-muted-foreground text-[10px] uppercase">Prix</div><div className="font-semibold tabular-nums">{formatFCFA(p.unitPrice)}</div></div>
+              <div><div className="text-muted-foreground text-[10px] uppercase">Stock</div><div className="font-semibold tabular-nums">{p.currentStock}</div></div>
+              <div><div className="text-muted-foreground text-[10px] uppercase">Valeur</div><div className="font-semibold tabular-nums">{formatFCFA(p.currentStock * p.unitPrice)}</div></div>
+            </div>
+            <div className="flex gap-1 pt-2 border-t">
+              <Button size="sm" variant="ghost" className="flex-1 h-9" onClick={() => { setEditing(p); setModalOpen(true); }}>
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="ghost" className="flex-1 h-9" onClick={() => navigate(`/entree?product=${p.id}`)}>
+                <ArrowDownToLine className="h-4 w-4 text-success" />
+              </Button>
+              <Button size="sm" variant="ghost" className="flex-1 h-9" onClick={() => navigate(`/sortie?product=${p.id}`)} disabled={p.currentStock === 0}>
+                <ArrowUpFromLine className="h-4 w-4 text-destructive" />
+              </Button>
+              <Button size="sm" variant="ghost" className="flex-1 h-9" onClick={() => setToDelete(p)}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Desktop table view */}
+      <Card className="overflow-hidden hidden md:block">
+        <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
               <tr>
@@ -152,6 +190,15 @@ export default function StockPage() {
           </div>
         )}
       </Card>
+
+      {/* Mobile pagination */}
+      {totalPages > 1 && (
+        <div className="md:hidden flex items-center justify-between gap-2">
+          <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>Précédent</Button>
+          <span className="text-xs text-muted-foreground">Page {page} / {totalPages}</span>
+          <Button size="sm" variant="outline" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Suivant</Button>
+        </div>
+      )}
 
       <ProductModal open={modalOpen} onOpenChange={setModalOpen} product={editing} onSave={handleSave} defaultMinStock={settings.defaultMinStock} />
 

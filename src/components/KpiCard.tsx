@@ -64,9 +64,11 @@ export function KpiCard({ title, value, icon: Icon, variant = "primary", subtitl
   const animated = useCountUp(parsed?.num ?? 0);
   const display = parsed ? formatLike(value, animated, parsed.suffix) : String(value);
 
-  // Tilt
+  // Tilt — disabled on touch devices
   const cardRef = useRef<HTMLDivElement>(null);
+  const isTouch = typeof window !== "undefined" && window.matchMedia?.("(hover: none)").matches;
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouch) return;
     const el = cardRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -88,19 +90,19 @@ export function KpiCard({ title, value, icon: Icon, variant = "primary", subtitl
     >
       <Card
         className={cn(
-          "p-5 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elevated)] transition-shadow animate-fade-in relative overflow-hidden",
+          "p-3 sm:p-5 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elevated)] transition-shadow animate-fade-in relative overflow-hidden",
           alert && "border-destructive/40 animate-heartbeat",
         )}
       >
         <div className="absolute -top-10 -right-10 h-24 w-24 rounded-full bg-current opacity-[0.04] blur-2xl" />
-        <div className="flex items-start justify-between gap-3 relative">
+        <div className="flex items-start justify-between gap-2 sm:gap-3 relative">
           <div className="min-w-0">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">{title}</p>
-            <p className="text-2xl font-bold mt-2 text-foreground truncate tabular-nums">{display}</p>
-            {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+            <p className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground font-medium leading-tight">{title}</p>
+            <p className="text-lg sm:text-2xl font-bold mt-1.5 sm:mt-2 text-foreground truncate tabular-nums">{display}</p>
+            {subtitle && <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{subtitle}</p>}
           </div>
-          <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 hover:scale-110 hover:rotate-3", variantStyles[variant])}>
-            <Icon className="h-5 w-5" />
+          <div className={cn("h-9 w-9 sm:h-11 sm:w-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 hover:scale-110 hover:rotate-3", variantStyles[variant])}>
+            <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
         </div>
       </Card>
